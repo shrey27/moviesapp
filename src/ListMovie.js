@@ -1,5 +1,5 @@
 import React from 'react';
-import {firestore, timestamp} from './config.js';
+import {firestore} from './config.js';
 import firebase from 'firebase';
 
 const IMAGE_API = "https://image.tmdb.org/t/p/w500";
@@ -16,25 +16,20 @@ const setVoteClass = (vote) => {
         }
     };
     
-function Movie({title, poster_path,overview,vote_average,val,cenId}){
+function ListMovie({title, poster_path,overview,vote_average,val,cenId}){
         
-    const updatePlaylist = async() => {    
-    const object = {
+    const updatePlaylist = async() => {
+        const object = {
             title:title,
             overview:overview,
             vote_average:vote_average,
             poster_path:IMAGE_API+poster_path,
-            createdAt:timestamp()
+            added:true
         }
-        await storeNameRef.doc(cenId).collection('movies').doc(title).set(object);
+        await storeNameRef.doc(cenId).update({
+            movies:firebase.firestore.FieldValue.arrayUnion(object)
+        })
     }
-
-    const removeMovie = () => {
-        console.log(cenId,title);
-        // await storeNameRef.doc(cenId).collection('movies').doc(title).delete().then(
-        //    () => {console.log('document deleted'); })
-    }
-
     return(
         <div className="movie">
             <img src={
@@ -54,10 +49,10 @@ function Movie({title, poster_path,overview,vote_average,val,cenId}){
                 </section>
                 <section className="section_2">
                     <button onClick={updatePlaylist} disabled={!val}>➕</button>
-                    <button onClick={removeMovie} disabled={!val}>🗑</button>
+                    {<button>🗑</button>}
                 </section>
             </div>
         </div> );
-};
+    };
 
-export default Movie;
+export default ListMovie;
