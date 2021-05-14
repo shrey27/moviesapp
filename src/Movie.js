@@ -1,9 +1,10 @@
-import React from 'react';
+import {React,useState} from 'react';
 import {firestore, timestamp} from './config.js';
 import firebase from 'firebase';
 
 const IMAGE_API = "https://image.tmdb.org/t/p/w500";
 const storeNameRef = firestore.collection('notes');
+
 const setVoteClass = (vote) => {
         if(vote>=8){
             return "green";
@@ -16,23 +17,28 @@ const setVoteClass = (vote) => {
         }
     };
     
-function Movie({title, poster_path,overview,vote_average,val,cenId}){
-        
-    const updatePlaylist = async() => {    
-    const object = {
+function Movie({title, poster_path,overview,vote_average,val,setVal,cenId}){
+    const [temp,setTemp] = useState(false); 
+    const updatePlaylist = async() => {   
+
+        // var notesArray = 0;
+        // await storeNameRef.doc(cenId).get().then((_doc) => {
+        //     const data = _doc.data();
+        //     notesArray = data['movies'].length;
+        // });
+        const object = {
+            id:title+vote_average,
             title:title,
             overview:overview,
             vote_average:vote_average,
-            poster_path:IMAGE_API+poster_path,
-            createdAt:timestamp()
+            poster_path:IMAGE_API+poster_path
         }
-        await storeNameRef.doc(cenId).collection('movies').doc(title).set(object);
-    }
-
-    const removeMovie = () => {
-        console.log(cenId,title);
-        // await storeNameRef.doc(cenId).collection('movies').doc(title).delete().then(
-        //    () => {console.log('document deleted'); })
+        await storeNameRef.doc(cenId).update(
+            {
+                movies : firebase.firestore.FieldValue.arrayUnion(object)
+            }
+        );
+    setTemp(!temp);
     }
 
     return(
@@ -53,8 +59,7 @@ function Movie({title, poster_path,overview,vote_average,val,cenId}){
                     <p>{overview}</p>
                 </section>
                 <section className="section_2">
-                    <button onClick={updatePlaylist} disabled={!val}>➕</button>
-                    <button onClick={removeMovie} disabled={!val}>🗑</button>
+                    {val ? <button onClick={updatePlaylist} disabled={temp}>➕</button> : ''}
                 </section>
             </div>
         </div> );

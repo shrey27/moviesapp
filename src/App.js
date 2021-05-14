@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import Movie from './Movie';
+import ListMovie from './ListMovie';
 import SideBar from './SideBar';
-//import {firestore} from './config.js';
+
 
 const FEATURED_API = "https://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=82e159f100b4dc92ee08805eb5bf0d0b";
 const SEARCH_API = "https://api.themoviedb.org/3/search/movie?api_key=82e159f100b4dc92ee08805eb5bf0d0b&query=";
 
 function App() {
-  const [movies,setMovies] = useState([]);
+  const [movies,setMovies] = useState(null);
   const [listmovies,setListMovies] = useState(null);
   const[searchItem,setSearchItem] = useState('');
   const [val,setVal] = useState(false);
@@ -16,10 +17,6 @@ function App() {
   //const storeNameRef = firestore.collection('notes');
   const [on,setOn] = useState(false);
   
-  useEffect(() => {
-      getMovies(FEATURED_API);
-  });
-
   const getMovies = (API) => {
       fetch(API)
           .then(res => res.json())
@@ -35,10 +32,8 @@ function App() {
 
   const handleSubmit = (e) => {
       e.preventDefault();
-      if(searchItem) {
-        getMovies(SEARCH_API+searchItem);
-        setSearchItem('');
-      }
+      getMovies(SEARCH_API+searchItem);
+      setSearchItem('');
     };
 
   return(
@@ -53,15 +48,16 @@ function App() {
               value={searchItem} onChange={handleChange}/>
           </form>
         </header>
-        <div className="main-section">      
-        {on ? <SideBar val={val} setVal={setVal} cenId={cenId} setCenId={setCenId} 
-        setListMovies={setListMovies}></SideBar> : ''}
-        <div className="movie-container"> 
-        {
-          listmovies ? listmovies.map((movie) => ( <Movie key={movie.title} {...movie} val={val} cenId={cenId}/>)):
-          movies.map((movie) => ( <Movie key={movie.id} {...movie} val={val} cenId={cenId}/>))
-        }
-        </div>
+        <div className="main-section">   
+          {on ? <SideBar val={val} setVal={setVal} cenId={cenId} setCenId={setCenId} 
+          setListMovies={setListMovies}></SideBar> : ''}    
+          <div className="movie-container"> 
+          {
+            listmovies ? listmovies.map((movie) => ( <ListMovie key={movie.id} {...movie} 
+              val={val} cenId={cenId} setListMovies={setListMovies}/>)):
+            movies && movies.map((movie) => ( <Movie key={movie.id} {...movie} val={val} setVal={setVal} cenId={cenId}/>))
+          }
+          </div>
         </div>
       </>
     );
