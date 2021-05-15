@@ -25,6 +25,7 @@ function Movie({id,title, poster_path,overview,vote_average,val,cenId,setListMov
             notesArray = (data['movies']);
         })
         notesArray = notesArray.filter(movie => movie.id!==id);
+        if(notesArray.contains(id)) console.log('hello')
         console.log(notesArray);
         await storeNameRef.doc(cenId).update({
                 movies : ([...notesArray])
@@ -50,7 +51,7 @@ function Movie({id,title, poster_path,overview,vote_average,val,cenId,setListMov
                     <p>{overview}</p>
                 </section>
                 <section className="section_2">
-                    <button onClick={removeMovie} disabled={!val}>🗑</button>
+                    <button onClick={removeMovie} disabled={!val}>Delete from Playlist</button>
                 </section>
             </div>
         </div> );

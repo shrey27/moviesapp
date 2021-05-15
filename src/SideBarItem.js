@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import {firestore} from './config';
 
-
 function SideBarItem (props){
     
     const { note,id,val,setVal,setCenId,play,setPlay,setListMovies } = props;
 
     const [dis,setDis] = useState(false);
     const [open,setOpen] = useState(false);
-    const [edit,setEdit] = useState(false);
     const storageref = firestore.collection('notes');
+    const [edit,setEdit] = useState(false);
     const [newname,setNewName] = useState('');
 
     const deleteListItem = async(e) => { 
@@ -58,33 +57,66 @@ function SideBarItem (props){
     const handleChange = (e) => {
         setNewName(e.target.value);
       }
-
+    
     const editListName = async(e) => {
         e.preventDefault();
-        await storageref.doc(id).update({
-            name:newname
+        var array = [];
+        await storageref.where("name", "==", newname).get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                console.log(doc.data()['name']);
+                array.push(doc);
+            });
         });
+        if(array.length===0){
+            await storageref.doc(id).update({
+                name:newname
+            });
+        }       
+        else{
+            window.alert('Playlist with given name already present in the DB');
+        }
         setNewName('');
         setEdit(false);
+        if(play)
+            setPlay(false);
+        else
+            setPlay(true);
+
     }
 
+    const editButton = () => {
+        setEdit(!edit);
+        setNewName('');
+        if(play)
+            setPlay(false);
+        else
+            setPlay(true);
+    }
     return(
         <div className="list">
             <div key={id}>
                {
-                   edit ?  
-                   <form onSubmit={editListName}>
-                        <input className="edit" 
-                        type="text" 
-                        placeholder="name" 
-                        value={newname} onChange={handleChange} required/>
-                        <button type='submit'>Go</button>
-                   </form> : <h1>{note.name}</h1>
+                   edit ? 
+                   <div className='form'> 
+                        <form onSubmit={editListName}>
+                                <input className="edit" 
+                                type="text" 
+                                placeholder="Playlist Name" 
+                                value={newname} onChange={handleChange} required/>
+                                <button type='submit'>✔️</button>
+                        </form>
+                    </div> : 
+                   <div className="listheader">
+                       <h1>{note.name}</h1>
+                    </div>
                }
-               <button value={id} onClick={()=>setEdit(!edit)}>{edit  ? 'Cancel' : 'Edit'}</button>
-               <button value={id} onClick={deleteListItem}>Del</button>
-               <button value={id} onClick={addMovie} disabled={play && !dis}>{dis ? 'Done' : '+ Add'}</button>
-               <button value={id} onClick={openList} disabled={play && !open}>{open ? '<- Back':'Open'}</button>
+               <div className="buttons">
+                    <button value={id} title={edit ? 'Cancel' : "Edit"} onClick={editButton}>{edit  ? '🚫' : '✏️'}</button>
+                    <button value={id} title="Delete Playlist" onClick={deleteListItem} >🗑️</button>
+                    <button value={id} title={dis ? 'Done' : "Add Movie to Playlist"} onClick={addMovie} disabled={play && !dis}>{dis ? '✔️' : '➕'}</button>
+                    <button value={id} title={open ? 'Go Back' : "Open Playlist"} onClick={openList} disabled={play && !open}>{open ? '✔️':'📂'}</button>
+               </div>
             </div>
         </div>
     );

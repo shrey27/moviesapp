@@ -1,5 +1,5 @@
 import {React,useState} from 'react';
-import {firestore, timestamp} from './config.js';
+import {firestore} from './config.js';
 import firebase from 'firebase';
 
 const IMAGE_API = "https://image.tmdb.org/t/p/w500";
@@ -48,18 +48,16 @@ function Movie({title, poster_path,overview,vote_average,val,setVal,cenId}){
                 "https://images.unsplash.com/photo-1509281373149-e957c6296406?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1569&q=80"
             } alt={title}/>
             <div className="movie-info">
-                    <h3>{title}</h3>
-                    <span className={
-                        `tag ${setVoteClass(vote_average)}`
-                    }>{vote_average}</span>
+                    <h4>{title}</h4>
+                    <h4 className={`tag ${setVoteClass(vote_average)}`}>{vote_average}</h4>
             </div>
             <div className="movie-overview">
                 <section className="section_1">
-                    <h2>Overview</h2>
+                    <h4>Overview</h4>
                     <p>{overview}</p>
                 </section>
                 <section className="section_2">
-                    {val ? <button onClick={updatePlaylist} disabled={temp}>➕</button> : ''}
+                    {val ? <button onClick={updatePlaylist} disabled={temp}>Add to Playlist</button> : ''}
                 </section>
             </div>
         </div> );

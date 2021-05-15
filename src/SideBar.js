@@ -32,11 +32,24 @@ function SideBar(props){
 
     const updateList = async() =>{
         setClick(false);
-        await storeNameRef.doc(playListName).set({
-            name:playListName,
-            movies:[],
-            createdAt:timestamp()            
+        var array = [];
+        await storeNameRef.where("name", "==", playListName).get()
+        .then((querySnapshot) => {
+            querySnapshot.forEach((doc) => {
+                console.log(doc.data()['name']);
+                array.push(doc);
+            });
         });
+        if(array.length===0){
+            await storeNameRef.doc(playListName).set({
+                name:playListName,
+                movies:[],
+                createdAt:timestamp()            
+            });
+        }
+        else{
+            window.alert('Playlist with given name already present in the DB');
+        }
         setplayListName('');
         //setNotes([...notes]);
     };
@@ -49,32 +62,39 @@ function SideBar(props){
             {hit ? getPlayLists() : ''}
             {until ? <img src={loading} alt='Loading' width='70px' height='70px'/> :
             <>
-                <button onClick={()=>setClick(!click)}>{click ? 'Cancel' : 'Add a Playlist'}</button>
+                <div className='addPlaylist'>
+                    <button onClick={()=>setClick(!click)}>{click ? '-' : '+'}</button>
+                    {
+                            click ? 
+                                <div>
+                                    <form onSubmit={updateList}>
+                                        <input type="text" onChange={handleChange} required/> 
+                                        <button type='submit'>Go</button>
+                                    </form>   
+                                </div> : ''
+                    }  
+                </div>
+                <div className='listNote'>
                 {
-                    click ? 
-                        <>
-                            <input type="text" placeholder="PlayList Name" onChange={handleChange}/> 
-                            <button onClick={updateList}>Go</button>
-                        </> : ''
-                }
-                {   
-                 notes.length>0 && notes.map((note)  => {
+                    notes.length>0 && notes.map((note)  => {
                         return (
-                        <div key={note.id}>
-                        <SideBarItem
-                            note={note} 
-                            id={note.id} 
-                            val={val}
-                            setVal={setVal}
-                            cenId={cenId}
-                            setCenId={setCenId}
-                            play={play}
-                            setPlay={setPlay}
-                            setListMovies={setListMovies}>
-                        </SideBarItem>
-                        </div>               
+                            
+                                <div key={note.id}>
+                                    <SideBarItem
+                                        note={note} 
+                                        id={note.id} 
+                                        val={val}
+                                        setVal={setVal}
+                                        cenId={cenId}
+                                        setCenId={setCenId}
+                                        play={play}
+                                        setPlay={setPlay}
+                                        setListMovies={setListMovies}>
+                                    </SideBarItem>
+                                </div>               
                     )})
                 }
+                </div>
             </>
             }
         </div>
