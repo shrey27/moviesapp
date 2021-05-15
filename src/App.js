@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import Movie from './Movie';
 import ListMovie from './ListMovie';
@@ -16,7 +16,9 @@ function App() {
   const [cenId,setCenId] = useState('');
   //const storeNameRef = firestore.collection('notes');
   const [on,setOn] = useState(false);
-  
+  useEffect(()=> {
+    getMovies(FEATURED_API);
+  })
   const getMovies = (API) => {
       fetch(API)
           .then(res => res.json())
@@ -38,23 +40,29 @@ function App() {
 
   return(
       <>
-        <header>
-          <h2>Movie Clone App</h2>
-          <button onClick={() => setOn(!on)}>PlayList</button>
-          <form onSubmit={handleSubmit}>
-              <input className="search" 
-              type="text" 
-              placeholder="search" 
-              value={searchItem} onChange={handleChange}/>
-          </form>
-        </header>
+        <div className='header'>
+          <div>
+              <h2>IMDb Clone</h2>
+          </div>
+          <div className='headerRight'>
+              <button onClick={() => setOn(!on)}>{on ? 'Home': 'PlayLists'}</button>
+              <form onSubmit={handleSubmit}>
+                  <input className="search" 
+                  type="text" 
+                  placeholder="search" 
+                  value={searchItem} onChange={handleChange}/>
+              </form>
+          </div>  
+        </div>
         <div className="main-section">   
           {on ? <SideBar val={val} setVal={setVal} cenId={cenId} setCenId={setCenId} 
           setListMovies={setListMovies}></SideBar> : ''}    
           <div className="movie-container"> 
           {
-            listmovies ? listmovies.map((movie) => ( <ListMovie key={movie.id} {...movie} 
-              val={val} cenId={cenId} setListMovies={setListMovies}/>)):
+            listmovies ? 
+              listmovies.map((movie) => ( <ListMovie key={movie.id} {...movie} 
+              val={val} cenId={cenId} setListMovies={setListMovies}/>))
+            :
             movies && movies.map((movie) => ( <Movie key={movie.id} {...movie} val={val} setVal={setVal} cenId={cenId}/>))
           }
           </div>
