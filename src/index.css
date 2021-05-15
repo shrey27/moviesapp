@@ -16,7 +16,7 @@ body{
   margin:0;
 }
 /* Header bar with Title and search bar */
-@media only screen and (max-height: 400px) {
+@media only screen and (max-height: 700px) {
   .header {
     display: flex;
     flex-direction: column;
