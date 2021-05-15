@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState } from 'react';
 import {firestore,timestamp} from './config.js';
 import SideBarItem from './SideBarItem.js';
 import loading from './loading.gif';
