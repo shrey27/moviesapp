@@ -89,6 +89,7 @@ body{
   margin:1rem;
   display: flex;
   flex-direction: column;
+  flex-wrap: wrap;
   max-width: 33.5vh;
  }
  .listheader{

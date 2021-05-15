@@ -17,8 +17,9 @@ const setVoteClass = (vote) => {
         }
     };
     
-function Movie({title, poster_path,overview,vote_average,val,setVal,cenId}){
+function Movie({title, poster_path,overview,vote_average,val,cenId}){
     const [temp,setTemp] = useState(false); 
+    
     const updatePlaylist = async() => {   
 
         // var notesArray = 0;
