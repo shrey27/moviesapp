@@ -40,6 +40,11 @@ body{
   .list-container{
     flex-direction: row;
   }
+  .listNote{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
 }
 .header {
   background-color: #373b69;
@@ -125,7 +130,6 @@ body{
 .listNote{
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
 }
 /* SideBar Item Component*/
 .list{
