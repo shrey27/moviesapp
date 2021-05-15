@@ -1,6 +1,6 @@
 import {React,useState} from 'react';
-import {firestore} from './config.js';
 import firebase from 'firebase';
+import {firestore} from './config.js';
 
 const IMAGE_API = "https://image.tmdb.org/t/p/w500";
 const storeNameRef = firestore.collection('notes');
