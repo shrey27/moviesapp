@@ -44,7 +44,7 @@ function App() {
       <>
         <div className='header'>
           <div>
-              <h2 onClick={getMovies(FEATURED_API)}>IMDb Clone</h2>
+              <h2>IMDb Clone</h2>
           </div>
           <div className='headerRight'>
               <button onClick={() => setOn(!on)}>{on ? 'Home': 'PlayLists'}</button>
