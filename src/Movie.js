@@ -41,7 +41,7 @@ function Movie({title, poster_path,overview,vote_average,val,cenId}){
         );
     setTemp(!temp);
     }
-
+ 
     return(
         <div className="movie">
             <img src={
